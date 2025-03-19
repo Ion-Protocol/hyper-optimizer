@@ -24,7 +24,7 @@ export function Vault() {
 
       {/* Header */}
       <div className="flex items-center gap-4 p-4 mb-8">
-        <div className="w-16 h-16 rounded-2xl bg-[#FF6C15]" />
+        <div className="w-16 h-16 rounded-2xl bg-[#1E3831]" />
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             <h1 className="text-[#1f180f] text-[40px] font-normal">bfBTC Zerolend Leverage Optimizer</h1>

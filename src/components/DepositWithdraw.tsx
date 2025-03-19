@@ -107,8 +107,8 @@ export function DepositWithdraw() {
                   ) : (
                     <>
                       <div className="flex items-baseline">
-                        <span className="text-[40px] font-medium text-[#CF5711]">{formattedVaultBalance}</span>
-                        <span className="text-[14px] text-[#CF5711]">{vaultKey}</span>
+                        <span className="text-[40px] font-medium text-[#66BCA6]">{formattedVaultBalance}</span>
+                        <span className="text-[14px] text-[#66BCA6]">{vaultKey}</span>
                       </div>
                       <div className="mt-1">
                         <span className="text-[#7b7b7b] text-[14px]">≈{formattedVaultBalanceInUsd}</span>
@@ -123,11 +123,11 @@ export function DepositWithdraw() {
               <h3 className="text-[#4d4d4d] text-[14px]">asset optimizer analytics</h3>
               <div className="bg-[#fff8f3] p-4 rounded-lg mb-6 mt-2">
                 <div className="flex flex-col">
-                  <span className="text-[#cf5711] text-[14px] font-medium">APY</span>
+                  <span className="text-[#66BCA6] text-[14px] font-medium">APY</span>
                   {vaultMetricsLoading ? (
                     <Skeleton className="h-[36px] w-[120px]" />
                   ) : (
-                    <span className="text-[24px] text-[#cf5711] font-medium">{formattedVaultApy}</span>
+                    <span className="text-[24px] text-[#66BCA6] font-medium">{formattedVaultApy}</span>
                   )}
                 </div>
               </div>

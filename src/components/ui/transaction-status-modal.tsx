@@ -174,7 +174,7 @@ export default function TransactionStatusModal({
         <div className="p-6 pt-0">
           <button
             onClick={onClose}
-            className="w-full h-[48px] bg-[#FF6C15] text-white rounded-lg font-medium hover:bg-[#FF6C15]/90 transition-colors"
+            className="w-full h-[48px] bg-[#1E3831] text-white rounded-lg font-medium hover:bg-[#1E3831]/90 transition-colors"
           >
             Done
           </button>

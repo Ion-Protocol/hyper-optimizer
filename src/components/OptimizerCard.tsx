@@ -41,7 +41,7 @@ export function OptimizerCard({
         {VaultIcon ? (
           <img src={VaultIcon} alt={title} className="h-12 w-12" />
         ) : (
-          <div className="w-12 h-12 bg-[#FF6C15] rounded-[9.39px]" />
+          <div className="w-12 h-12 bg-[#1E3831] rounded-[9.39px]" />
         )}
 
         {/* Title and Subtitle */}
@@ -71,7 +71,7 @@ export function OptimizerCard({
           {loading ? (
             <Skeleton className="h-[28px] w-[80px]" />
           ) : (
-            <p className="text-xl font-medium m-0 bg-gradient-to-r from-[#CF5711] to-[#6E2E09] bg-clip-text text-transparent">
+            <p className="text-xl font-medium m-0 bg-gradient-to-r from-[#66BCA6] to-[#366458] bg-clip-text text-transparent">
               {apy}
             </p>
           )}

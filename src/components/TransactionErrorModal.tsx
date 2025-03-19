@@ -42,7 +42,7 @@ export function TransactionErrorModal({ error, onClose, activeTab }: Transaction
         <div className="flex gap-4 p-6 mt-auto">
           <button
             onClick={onClose}
-            className="flex-1 rounded-lg bg-[#ff6c15] py-4 text-center text-[16px] font-medium text-white"
+            className="flex-1 rounded-lg bg-[#1E3831] py-4 text-center text-[16px] font-medium text-white"
           >
             Close
           </button>
