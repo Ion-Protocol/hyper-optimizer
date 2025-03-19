@@ -35,7 +35,7 @@ export function VaultGroup() {
         <div className="flex flex-col">
           <h1 className="text-[40px] font-semibold">{vaultGroup} Ecosystem Optimizers</h1>
           <p className="text-gray-600 text-[20px]">
-            Deposit your {vaultGroup} into an optimizer to deploy them in the Hemi ecosystem
+            Deposit your {vaultGroup} into an optimizer to deploy them in the Hypurr Collective ecosystem
           </p>
         </div>
         <div className="bg-white rounded-xl p-6 shadow-sm border border-[#DFDFDF]">

@@ -14,14 +14,14 @@ export function AppHeader() {
 
         <nav className="ml-8 flex items-center space-x-6">
           <Link to="/" className="text-sm font-medium text-[#1F180F]/100 hover:text-[#1F180F]/60 cursor-pointer">
-            Home
+            HypurrCo
           </Link>
           <div className="flex items-center space-x-2 hover:text-[#1F180F]/60 cursor-pointer">
             <Link
               to="#"
               className="text-sm font-medium text-[#1F180F]/100 transition-colors no-underline hover:no-underline hover:text-inherit"
             >
-              Hemi Bridge
+              Stake
             </Link>
             <ArrowUpRightIcon className="w-4 h-4" />
           </div>

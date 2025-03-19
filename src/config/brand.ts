@@ -30,17 +30,12 @@ export const footerData: FooterData = {
   socialLinks: [
     {
       name: "X",
-      href: "https://twitter.com/hemi",
+      href: "https://x.com/hypurr_co",
       icon: X,
     },
     {
-      name: "Discord",
-      href: "https://discord.gg/hemi",
-      icon: DiscIcon,
-    },
-    {
       name: "Telegram",
-      href: "https://t.me/hemi",
+      href: "https://t.me/+kQPx4WNpHEk4MmRl",
       icon: MessageCircle,
     },
   ],
@@ -50,11 +45,7 @@ export const footerData: FooterData = {
       links: [
         {
           name: "Ecosystem",
-          href: "/ecosystem",
-        },
-        {
-          name: "Block explorer",
-          href: "/explorer",
+          href: "https://www.hypurr.co/ecosystem-map",
         },
       ],
     },
@@ -63,50 +54,29 @@ export const footerData: FooterData = {
       links: [
         {
           name: "About",
-          href: "/about",
+          href: "https://www.hypurr.co/about",
         },
         {
           name: "Blog",
-          href: "/blog",
-        },
-        {
-          name: "Careers",
-          href: "/careers",
-        },
-        {
-          name: "Brand",
-          href: "/brand",
+          href: "https://www.hypurr.co/blog",
         },
       ],
     },
     {
       title: "Resources",
-      links: [
-        {
-          name: "Docs",
-          href: "/docs",
-        },
-        {
-          name: "Github",
-          href: "https://github.com/hemi",
-        },
-        {
-          name: "Changelog",
-          href: "/changelog",
-        },
-      ],
+      links: [],
     },
   ],
   legal: {
-    copyright: "© 2025 - Hemi Labs, Inc.",
+    copyright: "© 2025 - Hypurr Collective, Inc.",
     links: [
       {
         name: "Privacy",
-        href: "/privacy",
+        href: "https://www.hypurr.co/privacy-policy",
       },
       {
         name: "Terms",
-        href: "/terms",
+        href: "https://www.hypurr.co/terms-and-conditions",
       },
     ],
   },
