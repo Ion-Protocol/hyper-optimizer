@@ -27,6 +27,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Raleway";
+  src: url("/fonts/raleway/Raleway-VariableFont_wght.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Raleway";
+  src: url("/fonts/raleway/Raleway-Italic-VariableFont_wght.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     /* Base colors */
@@ -187,17 +203,14 @@
   h6,
   p,
   span {
-    @apply font-['MonaSans'];
+    @apply font-['Raleway'];
   }
 
   body {
-    @apply font-['MonaSans'] bg-background text-foreground;
+    @apply font-['Raleway'] bg-background text-foreground;
   }
 
   * {
     @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
   }
 }

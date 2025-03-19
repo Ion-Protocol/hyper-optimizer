@@ -11,8 +11,8 @@ export function AppHeader() {
           <img
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Hemi_Flow-A7bS6rmAxLCBabVLJfNzVVQ9cnxWJ5.png"
             alt="Optimizer Logo"
-            width={32}
-            height={32}
+            width={38}
+            height={33}
             className="object-contain"
           />
           <img src={optimizerImage} alt="Optimizer Icon" width={24} height={24} className="object-contain" />
