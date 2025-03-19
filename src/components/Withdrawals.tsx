@@ -21,14 +21,14 @@ export function Withdrawals() {
           </div>
 
           {withdrawals.length === 0 ? (
-            <div className="p-[75px] flex items-center justify-center">
+            <div className="p-[75px] flex items-center justify-center bg-white">
               <span className="text-[#7b7b7b] text-base font-normal leading-[130%] tracking-[-0.02em]">
                 You haven't made any transactions yet.
               </span>
             </div>
           ) : (
             withdrawals.map((withdrawal, index) => (
-              <div key={index} className="grid grid-cols-4 p-6 border-b border-[#dfdfdf]">
+              <div key={index} className="grid grid-cols-4 p-6 border-b border-[#dfdfdf] bg-white">
                 <div className="flex items-center gap-1 text-[#1f180f] font-medium">
                   Withdrawal <ArrowUpRight className="h-4 w-4 inline" />
                 </div>

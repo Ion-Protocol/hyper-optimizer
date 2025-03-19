@@ -17,7 +17,6 @@ export function Dashboard() {
   }
 
   function handleClickCloseBanner() {
-    console.log("clicked");
     setIsBannerVisible(false);
   }
 

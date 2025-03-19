@@ -8,13 +8,6 @@ export function AppHeader() {
     <header className="border border-[#DFDFDF] bg-white rounded-[18px] mt-8">
       <div className="container flex h-16 items-center px-4">
         <div className="flex items-center space-x-2">
-          <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Hemi_Flow-A7bS6rmAxLCBabVLJfNzVVQ9cnxWJ5.png"
-            alt="Optimizer Logo"
-            width={38}
-            height={33}
-            className="object-contain"
-          />
           <img src={optimizerImage} alt="Optimizer Icon" width={24} height={24} className="object-contain" />
           <span className="text-lg font-semibold text-[#1F180F]">optimizer</span>
         </div>

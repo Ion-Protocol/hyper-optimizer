@@ -121,7 +121,7 @@ export function DepositWithdraw() {
 
             <div className="mt-8">
               <h3 className="text-[#4d4d4d] text-[14px]">asset optimizer analytics</h3>
-              <div className="bg-[#fff8f3] p-4 rounded-lg mb-6 mt-2">
+              <div className="bg-[#E0F9F3] p-4 rounded-lg mb-6 mt-2">
                 <div className="flex flex-col">
                   <span className="text-[#66BCA6] text-[14px] font-medium">APY</span>
                   {vaultMetricsLoading ? (
@@ -132,7 +132,7 @@ export function DepositWithdraw() {
                 </div>
               </div>
 
-              <div className="bg-[#f8f8f8] p-4 rounded-lg">
+              <div className="bg-[#E0F9F3] p-4 rounded-lg">
                 <div className="flex items-center text-[#7b7b7b] text-[14px]">
                   <span>TVL</span>
                 </div>
