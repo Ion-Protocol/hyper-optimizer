@@ -1,4 +1,3 @@
-import DiscordIcon from "@/assets/svgs/socials/Discord.svg?react";
 import TelegramIcon from "@/assets/svgs/socials/Telegram.svg?react";
 import XIcon from "@/assets/svgs/socials/X.svg?react";
 import { footerData } from "@/config/brand";

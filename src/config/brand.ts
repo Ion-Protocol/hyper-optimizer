@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { DiscIcon, MessageCircle, X } from "lucide-react";
+import { MessageCircle, X } from "lucide-react";
 
 export interface SocialLink {
   name: string;
