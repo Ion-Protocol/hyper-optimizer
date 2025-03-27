@@ -7,6 +7,7 @@ export default {
       fontFamily: {
         body: ["PP Formula", "sans-serif"],
         heading: ["Diatype", "serif"],
+        teodor: ["Teodor", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
