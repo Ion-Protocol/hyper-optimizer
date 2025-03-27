@@ -1,6 +1,4 @@
-import { getEthPrice } from "@molecularlabs/nucleus-frontend";
 import { useEffect, useMemo, useState } from "react";
-import { mainnet } from "viem/chains";
 import { vaultGroupsConfig } from "../config/vaultGroupsConfig";
 import { VaultGroup } from "../types";
 import { TvlService } from "../services/TvlService";
@@ -18,7 +16,6 @@ export function useDashboard() {
   // Raw state
   //////////////////
   const [vaultGroupsState, setVaultGroupsState] = useState<{ key: VaultGroup; tvl: string; apy: number }[]>([]);
-  const [ethPrice, setEthPrice] = useState<string>("0");
   const [loading, setLoading] = useState<boolean>(true);
 
   // Initialize vault group data with config values
@@ -40,8 +37,7 @@ export function useDashboard() {
     const totalTvlAsBigInt = vaultGroupsState.reduce((acc, vault) => {
       return acc + BigInt(vault.tvl.toString());
     }, BigInt(0));
-    const totalTvlInUsdAsBigInt = (totalTvlAsBigInt * BigInt(ethPrice)) / BigInt(1e18);
-    const totalTvlInUsd = totalTvlInUsdAsBigInt / BigInt(1e8);
+    const totalTvlInUsd = totalTvlAsBigInt / BigInt(1e8);
     const formattedTotalTvlInUsd = new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
@@ -50,7 +46,7 @@ export function useDashboard() {
     }).format(Number(totalTvlInUsd));
 
     return formattedTotalTvlInUsd;
-  }, [ethPrice, vaultGroupsState]);
+  }, [vaultGroupsState]);
 
   // Vault group data containing tvl values in usd and apy values
   const vaultGroupData = useMemo(() => {
@@ -63,8 +59,7 @@ export function useDashboard() {
 
       // TVL calculation
       const tvlAsBigInt = BigInt(vaultGroup.tvl);
-      const tvlInUsdAsBigInt = (tvlAsBigInt * BigInt(ethPrice)) / BigInt(1e18);
-      const tvlInUsd = tvlInUsdAsBigInt / BigInt(1e8);
+      const tvlInUsd = tvlAsBigInt / BigInt(1e8);
       const formattedTvlInUsd = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
@@ -82,7 +77,7 @@ export function useDashboard() {
         protocols: protocols,
       };
     });
-  }, [vaultGroupsState, ethPrice, initialVaultGroupData]);
+  }, [vaultGroupsState, initialVaultGroupData]);
 
   ///////////////////////////////
   // Effects for async operations
@@ -114,13 +109,6 @@ export function useDashboard() {
       }
     }
     fetchVaultGroupState();
-
-    // Fetch and set ETH price state
-    async function fetchEthPrice() {
-      const price = await getEthPrice({ chain: mainnet });
-      setEthPrice(price.toString());
-    }
-    fetchEthPrice();
   }, []);
 
   return {

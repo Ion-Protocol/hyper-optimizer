@@ -1,7 +1,8 @@
-import { VaultKey, getRate, getTotalSupply, getVaultByKey } from "@molecularlabs/nucleus-frontend";
+import { VaultKey, getTotalSupply, getVaultByKey } from "@molecularlabs/nucleus-frontend";
 import { Chain } from "viem";
 import { vaultGroupsConfig } from "../config/vaultGroupsConfig";
 import { VaultGroup } from "../types";
+import { PriceFeedService } from "./PriceFeedService";
 
 export class TvlService {
   // Private constructor to prevent instantiation.
@@ -18,16 +19,6 @@ export class TvlService {
   }
 
   /**
-   * Internal helper function: Get the share rate for a vault on the mainnet.
-   */
-  private static async getShareRateByVault(vaultKey: VaultKey) {
-    const vaultConfig = getVaultByKey(vaultKey);
-    const accountantAddress = vaultConfig.contracts.accountant;
-    const rate = await getRate({ accountantAddress, chain: vaultConfig.chain as Chain });
-    return rate;
-  }
-
-  /**
    * Internal helper function: Get the total supply for a vault across all chains.
    */
   private static async getTotalSupplyByVault(vaultKey: VaultKey) {
@@ -37,13 +28,12 @@ export class TvlService {
   }
 
   /**
-   * Public function: Get the TVL for a vault by multiplying the total supply by the share rate.
+   * Public function: Get the TVL for a vault by multiplying the total supply by the HYPE/USD rate.
    */
   public static async getTvlByVault(vaultKey: VaultKey) {
     const vaultTotalSupply = await this.getTotalSupplyByVault(vaultKey);
-    console.log(vaultKey, vaultTotalSupply);
-    const vaultShareRate = await this.getShareRateByVault(vaultKey);
-    const tvl = (vaultTotalSupply * vaultShareRate) / BigInt(1e18);
+    const hypeUsdRate = await PriceFeedService.getHypeUsdRate();
+    const tvl = (vaultTotalSupply * hypeUsdRate) / BigInt(1e18);
     return tvl;
   }
 

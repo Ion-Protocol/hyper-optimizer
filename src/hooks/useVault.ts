@@ -530,12 +530,11 @@ export function useVault() {
   const formattedVaultApy = `${vaultApy.toFixed(2)}%`;
 
   // Vault TVL
-  const tvlInUsdAsBigInt = (BigInt(vaultTvl) * BigInt(ethPrice)) / BigInt(1e18);
-  const totalTvlInUsd = tvlInUsdAsBigInt / BigInt(1e8);
+  const tvlInUsd = BigInt(vaultTvl) / BigInt(1e8);
   const formattedVaultTvl = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(Number(totalTvlInUsd));
+  }).format(Number(tvlInUsd));
 
   // Slippage
   const formattedSlippage = `${(DEFAULT_SLIPPAGE * 100).toFixed(2)}%`;
