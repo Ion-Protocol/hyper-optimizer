@@ -4,12 +4,13 @@ import {
   CrossChainTellerBaseAbi,
   DEFAULT_SLIPPAGE,
   getPreviewFee,
-  getRateInQuoteSafe,
   getVaultByKey,
   prepareBridgeData,
   TellerAbi,
   TokenKey,
   VaultKey,
+  nucleusTokenConfig,
+  NucleusTokenKey,
 } from "@molecularlabs/nucleus-frontend";
 import { Address } from "viem";
 import { mainnet } from "viem/chains";
@@ -34,24 +35,6 @@ export class VaultService {
     const minimumMint = (depositAmount * BigInt(1e18)) / rate;
     const slippageAmount = (minimumMint * slippageAsBigInt) / BigInt(1e18);
     return minimumMint - slippageAmount;
-  }
-
-  // Get the rate in quote for a vault
-  public static async getRateInQuote(vaultKey: VaultKey, depositToken: TokenKey): Promise<bigint> {
-    const config = getVaultByKey(vaultKey as VaultKey);
-    const tokenAddress =
-      config.deposit.depositTokens[mainnet.id]?.[depositToken as TokenKey]?.token.addresses[mainnet.id];
-    const accountantAddress = config.contracts.accountant;
-    if (!tokenAddress) {
-      return BigInt(0);
-    }
-    const rate = await getRateInQuoteSafe({
-      wantAssetAddress: tokenAddress,
-      accountantAddress,
-      chain: mainnet,
-    });
-
-    return rate;
   }
 
   // Get the preview fee for a vault

@@ -97,7 +97,11 @@ export function DepositWithdraw() {
             <div className="mt-6">
               <h3 className="text-[#4d4d4d] text-[14px]">Your position</h3>
               <div className="flex items-center gap-3">
-                <img src={getVaultIcon(vaultKey) || ""} alt={`${vaultKey} icon`} className="w-12 h-12" />
+                {getVaultIcon(vaultKey) ? (
+                  <img src={getVaultIcon(vaultKey)} alt={`${vaultKey} icon`} className="w-12 h-12" />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-gray-200" />
+                )}
                 <div>
                   {vaultMetricsLoading ? (
                     <div className="flex flex-col gap-2">
@@ -108,7 +112,7 @@ export function DepositWithdraw() {
                     <>
                       <div className="flex items-baseline">
                         <span className="text-[40px] font-teodor text-[#66BCA6]">{formattedVaultBalance}</span>
-                        <span className="text-[14px] text-[#66BCA6]">{vaultKey}</span>
+                        <span className="text-[14px] text-[#66BCA6]">{vaultKey?.toUpperCase()}</span>
                       </div>
                       <div className="mt-1">
                         <span className="text-[#7b7b7b] text-[14px]">≈{formattedVaultBalanceInUsd}</span>
@@ -190,7 +194,11 @@ export function DepositWithdraw() {
                     <div className="space-y-4">
                       <label className="text-[#4d4d4d] text-[12px] block">And receive</label>
                       <div className="flex items-center gap-2">
-                        <img src={getVaultIcon(vaultKey) || ""} alt={`${vaultKey} icon`} className="w-6 h-6" />
+                        {getVaultIcon(vaultKey) ? (
+                          <img src={getVaultIcon(vaultKey)} alt={`${vaultKey} icon`} className="w-6 h-6" />
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-gray-200" />
+                        )}
                         {tokenMetricsLoading ? (
                           <Skeleton className="h-[24px] w-[120px]" />
                         ) : (
@@ -247,6 +255,11 @@ export function DepositWithdraw() {
                     <div className="space-y-4">
                       <label className="text-[#4d4d4d] text-[12px] block">And receive</label>
                       <div className="flex items-center gap-2">
+                        {getVaultIcon(vaultKey) ? (
+                          <img src={getVaultIcon(vaultKey)} alt={`${vaultKey} icon`} className="w-6 h-6" />
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-gray-200" />
+                        )}
                         {tokenMetricsLoading ? (
                           <Skeleton className="h-[24px] w-[120px]" />
                         ) : (
@@ -394,7 +407,7 @@ export function DepositWithdraw() {
               sendToken={activeTab === "deposit" ? availableTokens[depositTokenIndex].token.symbol : vaultKey || ""}
               receiveToken={activeTab === "deposit" ? vaultKey || "" : availableTokens[receiveTokenIndex].token.symbol}
               onClose={() => setIsModalOpen(false)}
-              onRefresh={() => console.log("Card refreshed")}
+              onRefresh={() => {}}
             />
           </div>
         </div>

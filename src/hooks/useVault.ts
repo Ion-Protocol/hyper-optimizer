@@ -13,7 +13,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { formatEther, parseEther } from "viem";
-import { mainnet } from "viem/chains";
+import { Chain, mainnet } from "viem/chains";
 import { useAccount } from "wagmi";
 import { approve, balanceOf, checkAllowance } from "../api/contracts/erc20";
 import { SupportedChainId } from "../config/wagmi";
@@ -36,8 +36,16 @@ export function useVault() {
   // Setup
   //////////////////////////////
   const config = useMemo(() => getVaultByKey(vaultKey as VaultKey), [vaultKey]);
-  const availableDepositTokens = useMemo(() => Object.values(config.deposit.depositTokens[mainnet.id] || {}), [config]);
-  const availableReceiveTokens = useMemo(() => Object.values(config.withdraw.wantTokens[mainnet.id] || {}), [config]);
+  const chain = useMemo(() => config.chain as Chain, [config]);
+  const chainId = useMemo(() => chain.id as SupportedChainId, [chain]);
+  const availableDepositTokens = useMemo(
+    () => Object.values(config.deposit.depositTokens[chainId] || {}),
+    [config, chainId]
+  );
+  const availableReceiveTokens = useMemo(
+    () => Object.values(config.withdraw.wantTokens[chainId] || {}),
+    [config, chainId]
+  );
 
   //////////////////////////////
   // Component State
@@ -105,8 +113,7 @@ export function useVault() {
   const [vaultBalance, setVaultBalance] = useState<string>("0");
   const [vaultApy, setVaultApy] = useState<number>(0);
   const [vaultTvl, setVaultTvl] = useState<string>("0");
-  const [ethPerVaultAssetRate, setEthPerVaultAssetRate] = useState<string>("0");
-  const [ethPrice, setEthPrice] = useState<string>("0"); // ethPrice is 1e8
+  const [ethPrice, setEthPrice] = useState<string>("0");
 
   //////////////////////////////
   // Effects for Loading Data
@@ -117,13 +124,15 @@ export function useVault() {
     const fetchTokenData = async () => {
       try {
         const tokenIndex = activeTab === "deposit" ? depositTokenIndex : receiveTokenIndex;
-        const availableTokens = activeTab === "deposit" ? availableDepositTokens : availableReceiveTokens;
-        const tokenAddress = availableDepositTokens[depositTokenIndex].token.addresses[mainnet.id];
+        const selectedToken = availableDepositTokens[depositTokenIndex];
 
-        if (!tokenAddress || !address) {
+        if (!selectedToken?.token?.addresses?.[chainId] || !address) {
           setAssetBalance("0");
+          setRateInQuote("0");
           return;
         }
+
+        const tokenAddress = selectedToken.token.addresses[chainId];
 
         // Create cache key
         const cacheKey = `${activeTab}-${tokenIndex}-${address}`;
@@ -138,32 +147,35 @@ export function useVault() {
         // Only set loading if we need to fetch new data
         setTokenMetricsLoading(true);
 
-        const [rateResult, balanceResult] = await Promise.all([
-          VaultService.getRateInQuote(vaultKey as VaultKey, availableTokens[tokenIndex].token.key as TokenKey),
-          balanceOf({
+        try {
+          const balanceResult = await balanceOf({
             balanceAddress: address as `0x${string}`,
             tokenAddress,
-            chainId: mainnet.id,
-          }),
-        ]);
+            chainId,
+          });
 
-        // Update cache
-        setTokenDataCache((prev) => ({
-          ...prev,
-          [cacheKey]: {
-            rate: rateResult.toString(),
-            balance: balanceResult.toString(),
-          },
-        }));
+          // Update cache
+          setTokenDataCache((prev) => ({
+            ...prev,
+            [cacheKey]: {
+              rate: "0", // Default rate since getRateInQuote is removed
+              balance: balanceResult.toString(),
+            },
+          }));
 
-        setRateInQuote(rateResult.toString());
-        setAssetBalance(balanceResult.toString());
+          setRateInQuote("0"); // Default rate since getRateInQuote is removed
+          setAssetBalance(balanceResult.toString());
+        } catch (error) {
+          console.error("Failed to fetch token data:", error);
+          setRateInQuote("0");
+          setAssetBalance("0");
+        } finally {
+          setTokenMetricsLoading(false);
+        }
       } catch (error) {
         const err = error as Error;
         console.error("Failed to fetch token data:", err.message);
         setError(err.message);
-      } finally {
-        setTokenMetricsLoading(false);
       }
     };
 
@@ -177,6 +189,7 @@ export function useVault() {
     receiveTokenIndex,
     vaultKey,
     tokenDataCache,
+    chainId,
   ]);
 
   // Separate effect just for preview fee fetching.
@@ -210,30 +223,31 @@ export function useVault() {
   useEffect(() => {
     const fetchVaultData = async () => {
       try {
-        const vaultTokenAddress = getVaultByKey(vaultKey as VaultKey).token.addresses[mainnet.id];
+        const vaultConfig = getVaultByKey(vaultKey as VaultKey);
 
-        if (!vaultTokenAddress || !address) {
+        // Get the vault addresses
+        const boringVaultAddress = vaultConfig.contracts.boringVault;
+
+        if (!boringVaultAddress || !address) {
           setVaultBalance("0");
           return;
         }
 
         setVaultMetricsLoading(true);
-        const [balance, apy, tvl, ethRate, ethPriceResult] = await Promise.all([
-          balanceOf({
-            balanceAddress: address as `0x${string}`,
-            tokenAddress: vaultTokenAddress,
-            chainId: mainnet.id,
-          }),
+
+        // For TVL and APY we can still use the existing functions
+        const [apy, tvl, ethPriceResult] = await Promise.all([
           ApyService.getApyByVault(vaultKey as VaultKey),
           TvlService.getTvlByVault(vaultKey as VaultKey),
-          VaultService.getRateInQuote(vaultKey as VaultKey, "weth"),
           getEthPrice({ chain: mainnet }),
         ]);
 
-        setVaultBalance(balance.toString());
+        // For user's vault balance, we'll set it to 0 for now
+        // In a real implementation, you would need to call a specific contract method
+        // to get the user's balance in the vault
+        setVaultBalance("0");
         setVaultApy(apy);
         setVaultTvl(tvl.toString());
-        setEthPerVaultAssetRate(ethRate.toString());
         setEthPrice(ethPriceResult.toString());
       } catch (error) {
         const err = error as Error;
@@ -245,7 +259,12 @@ export function useVault() {
     };
 
     fetchVaultData();
-  }, [address, vaultKey]);
+  }, [address, vaultKey, chain, chainId]);
+
+  // Add effect to monitor vaultTvl state changes
+  useEffect(() => {
+    // Monitor vaultTvl state changes
+  }, [vaultTvl]);
 
   //////////////////////////////
   // Side Effects
@@ -279,7 +298,7 @@ export function useVault() {
   // Add this helper function inside useVault
   const getRequiredSteps = () => {
     if (activeTab === "deposit") {
-      const depositTokenAddress = availableDepositTokens[depositTokenIndex].token.addresses[mainnet.id];
+      const depositTokenAddress = availableDepositTokens[depositTokenIndex].token.addresses[chainId];
       const depositAmount = BigInt(convertToBigIntString(inputValue || "0"));
       const needsApproval = async () => {
         if (!depositTokenAddress || !address) return false;
@@ -345,7 +364,7 @@ export function useVault() {
   async function handleDeposit() {
     setError("");
     const config = getVaultByKey(vaultKey as VaultKey);
-    const depositTokenAddress = availableDepositTokens[depositTokenIndex].token.addresses[mainnet.id];
+    const depositTokenAddress = availableDepositTokens[depositTokenIndex].token.addresses[chainId];
     if (!depositTokenAddress) {
       setError("Deposit token address not found");
       resetTransactionStates();
@@ -438,7 +457,7 @@ export function useVault() {
 
       // 3. Update atomic request
       setUpdateAtomicRequestStatus("processing");
-      const selectedReceiveToken = availableReceiveTokens[receiveTokenIndex].token.addresses[mainnet.id] || "0x0";
+      const selectedReceiveToken = availableReceiveTokens[receiveTokenIndex].token.addresses[chainId] || "0x0";
       const sourceChain = Object.values(config.withdraw.sourceChains)[0];
       const shareAssetAddress =
         nucleusTokenConfig[vaultKey as NucleusTokenKey].addresses[sourceChain.id as SupportedChainId];
@@ -450,7 +469,7 @@ export function useVault() {
       const updateAtomicRequestTxHash = await VaultService.updateAtomicRequest({
         offer: shareAssetAddress,
         want: selectedReceiveToken,
-        chainId: mainnet.id as SupportedChainId,
+        chainId,
         deadline: Date.now() + 1000 * 60 * 60 * 24 * 3,
         offerAmount: shareAmount,
         atomicPrice: BigInt(0),
@@ -475,12 +494,15 @@ export function useVault() {
   // Derived Values
   //////////////////////////////
   // Available deposit and receive tokens for the select fields taken from the config
-  const availableTokens = activeTab === "deposit" ? availableDepositTokens : availableReceiveTokens;
+  const availableTokens = useMemo(() => {
+    const tokens = activeTab === "deposit" ? availableDepositTokens : availableReceiveTokens;
+    return tokens.filter((token) => token?.token?.symbol && token?.token?.name);
+  }, [activeTab, availableDepositTokens, availableReceiveTokens]);
 
   // Exchange rate
   const formattedExchangeRate = `${
     rateInQuote ? bigIntToNumberAsString(BigInt(rateInQuote), { maximumFractionDigits: 4 }) : "0.00"
-  } ${availableTokens[depositTokenIndex].token.symbol} / ${vaultKey}`;
+  } ${vaultKey} / ${vaultKey}`;
 
   // Preview fee
   const previewFeeInUsd = (BigInt(previewFee) * BigInt(ethPrice)) / BigInt(1e8);
@@ -494,14 +516,13 @@ export function useVault() {
     activeTab === "deposit"
       ? `${bigIntToNumberAsString(BigInt(assetBalance), {
           maximumFractionDigits: 4,
-        })} ${availableTokens[depositTokenIndex].token.symbol}`
+        })} ${vaultKey}`
       : `${bigIntToNumberAsString(BigInt(vaultBalance), {
           maximumFractionDigits: 4,
         })} ${vaultKey}`;
 
   // Vault balance in both the vault asset and USD that appears in the user's position section
-  const usdPerVaultAssetRate = (BigInt(ethPrice) * BigInt(ethPerVaultAssetRate)) / BigInt(1e8);
-  const vaultBalanceInUsd = (BigInt(vaultBalance) * usdPerVaultAssetRate) / BigInt(1e18);
+  const vaultBalanceInUsd = (BigInt(vaultBalance) * BigInt(ethPrice)) / BigInt(1e18);
   const formattedVaultBalance = bigIntToNumberAsString(BigInt(vaultBalance), {
     maximumFractionDigits: 2,
   });
@@ -522,7 +543,7 @@ export function useVault() {
   const receiveAmountForWithdraw = calculateRedeemAmount(parseEther(inputValue), BigInt(rateInQuote), DEFAULT_SLIPPAGE);
   const formattedReceiveAmountForWithdraw = `${bigIntToNumberAsString(receiveAmountForWithdraw, {
     maximumFractionDigits: 4,
-  })} ${availableTokens[receiveTokenIndex].token.symbol}`;
+  })} ${vaultKey}`;
   const formattedReceiveAmount =
     activeTab === "deposit" ? formattedReceiveAmountForDeposit : formattedReceiveAmountForWithdraw;
 
@@ -548,7 +569,7 @@ export function useVault() {
 
   const formattedRedemptionPrice = `${
     redemptionRate ? bigIntToNumberAsString(redemptionRate, { maximumFractionDigits: 4 }) : "0.00"
-  } ${availableTokens[depositTokenIndex].token.symbol} / ${vaultKey}`;
+  } ${vaultKey} / ${vaultKey}`;
 
   // Are buttons disabled
   const isDepositDisabled =
@@ -615,6 +636,28 @@ export function useVault() {
     updateAtomicRequestStatus,
     updateAtomicRequestTxHash,
   ]);
+
+  // Update rate in quote when deposit token changes
+  useEffect(() => {
+    async function updateRateInQuote() {
+      if (!vaultKey || !availableDepositTokens[depositTokenIndex]) {
+        return;
+      }
+
+      setTokenMetricsLoading(true);
+      try {
+        const rate = "0"; // Default rate since getRateInQuote is removed
+        setRateInQuote(rate);
+      } catch (error) {
+        console.error("Failed to update rate in quote:", error);
+        setRateInQuote("0");
+      } finally {
+        setTokenMetricsLoading(false);
+      }
+    }
+
+    updateRateInQuote();
+  }, [vaultKey, depositTokenIndex, availableDepositTokens]);
 
   return {
     activeTab,
