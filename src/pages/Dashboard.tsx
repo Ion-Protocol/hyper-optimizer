@@ -25,7 +25,7 @@ export function Dashboard() {
       {/* Title and Total Value Locked */}
       <div className="flex justify-between items-center py-12 gap-8">
         <div className="flex flex-col">
-          <h1 className="text-[40px] font-semibold">Hypurr Collective Ecosystem Optimizer</h1>
+          <h1 className="text-[40px] font-teodor">Hypurr Collective Ecosystem Optimizer</h1>
           <p className="text-gray-600 text-[20px]">
             Deposit your assets on Hyperliquid into an optimizer to deploy them into DeFi protocols
           </p>
