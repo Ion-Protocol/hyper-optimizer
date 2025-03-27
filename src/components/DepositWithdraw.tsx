@@ -92,7 +92,7 @@ export function DepositWithdraw() {
         <div className="max-w-6xl grid grid-cols-1 md:grid-cols-2 bg-white">
           {/* Left Column - Overview */}
           <div className="border-r border-[#DFDFDF] p-9">
-            <h2 className="text-[20px] font-medium text-[#1f180f]">Overview</h2>
+            <h2 className="text-[20px] font-teodor text-[#1f180f]">Overview</h2>
 
             <div className="mt-6">
               <h3 className="text-[#4d4d4d] text-[14px]">Your position</h3>
@@ -107,7 +107,7 @@ export function DepositWithdraw() {
                   ) : (
                     <>
                       <div className="flex items-baseline">
-                        <span className="text-[40px] font-medium text-[#66BCA6]">{formattedVaultBalance}</span>
+                        <span className="text-[40px] font-teodor text-[#66BCA6]">{formattedVaultBalance}</span>
                         <span className="text-[14px] text-[#66BCA6]">{vaultKey}</span>
                       </div>
                       <div className="mt-1">

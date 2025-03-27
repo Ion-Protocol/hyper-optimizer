@@ -7,7 +7,7 @@ export function Withdrawals() {
   return (
     <div>
       <div className="container mx-auto">
-        <h1 className="text-[#1f180f] text-3xl font-bold mb-6">Your transactions</h1>
+        <h1 className="text-[#1f180f] text-3xl font-teodor mb-6">Your transactions</h1>
 
         <div
           className="border border-[#dfdfdf] rounded-2xl overflow-hidden"

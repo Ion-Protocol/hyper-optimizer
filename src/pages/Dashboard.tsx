@@ -44,7 +44,7 @@ export function Dashboard() {
               <>
                 <div className="flex flex-col items-center">
                   <Lock className="text-gray-600 mb-3" size={20} />
-                  <span className="text-2xl font-semibold">{totalTvl}</span>
+                  <span className="text-2xl font-teodor">{totalTvl}</span>
                 </div>
                 <span className="text-gray-600">Total Value Locked</span>
               </>

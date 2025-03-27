@@ -33,7 +33,7 @@ export function VaultGroup() {
       {/* Title and Total Value Locked Section */}
       <div className="flex justify-between items-center gap-8 mt-4">
         <div className="flex flex-col">
-          <h1 className="text-[40px] font-semibold">{vaultGroup} Ecosystem Optimizers</h1>
+          <h1 className="text-[40px] font-teodor">{vaultGroup} Ecosystem Optimizers</h1>
           <p className="text-gray-600 text-[20px]">
             Deposit your {vaultGroup} into an optimizer to deploy them in the Hypurr Collective ecosystem
           </p>
@@ -52,7 +52,7 @@ export function VaultGroup() {
               <>
                 <div className="flex flex-col items-center">
                   <Lock className="text-gray-600 mb-3" size={20} />
-                  <span className="text-2xl font-semibold">{totalTvl}</span>
+                  <span className="text-2xl font-teodor">{totalTvl}</span>
                 </div>
                 <span className="text-gray-600">Total Value Locked</span>
               </>

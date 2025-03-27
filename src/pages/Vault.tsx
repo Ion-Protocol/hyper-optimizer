@@ -27,7 +27,7 @@ export function Vault() {
         <div className="w-16 h-16 rounded-2xl bg-[#1E3831]" />
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
-            <h1 className="text-[#1f180f] text-[40px] font-normal">bfBTC Zerolend Leverage Optimizer</h1>
+            <h1 className="text-[#1f180f] text-[40px] font-teodor">bfBTC Zerolend Leverage Optimizer</h1>
           </div>
           <div className="flex items-center gap-2">
             <p className="text-[#4d4d4d] text-[20px]">Automated staked BTC leverage looping</p>

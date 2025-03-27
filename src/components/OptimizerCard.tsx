@@ -61,7 +61,7 @@ export function OptimizerCard({
           {loading ? (
             <Skeleton className="h-[28px] w-[120px]" />
           ) : (
-            <p className="text-xl font-medium text-[#1F180F] m-0">{tvl}</p>
+            <p className="text-xl font-teodor text-[#1F180F] m-0">{tvl}</p>
           )}
         </div>
 
@@ -71,7 +71,7 @@ export function OptimizerCard({
           {loading ? (
             <Skeleton className="h-[28px] w-[80px]" />
           ) : (
-            <p className="text-xl font-medium m-0 bg-gradient-to-r from-[#66BCA6] to-[#366458] bg-clip-text text-transparent">
+            <p className="text-xl font-teodor m-0 bg-gradient-to-r from-[#66BCA6] to-[#366458] bg-clip-text text-transparent">
               {apy}
             </p>
           )}
