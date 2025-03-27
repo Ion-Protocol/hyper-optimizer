@@ -37,15 +37,26 @@ export function useVault() {
   //////////////////////////////
   const config = useMemo(() => getVaultByKey(vaultKey as VaultKey), [vaultKey]);
   const chain = useMemo(() => config.chain as Chain, [config]);
-  const chainId = useMemo(() => chain.id as SupportedChainId, [chain]);
-  const availableDepositTokens = useMemo(
-    () => Object.values(config.deposit.depositTokens[chainId] || {}),
-    [config, chainId]
-  );
-  const availableReceiveTokens = useMemo(
-    () => Object.values(config.withdraw.wantTokens[chainId] || {}),
-    [config, chainId]
-  );
+  const chainId = useMemo(() => {
+    const id = chain.id as SupportedChainId;
+    return id;
+  }, [chain, config.deposit.depositTokens, vaultKey]);
+  const availableDepositTokens = useMemo(() => {
+    // If current chain has deposit tokens, use them, otherwise fall back to mainnet (chain ID 1)
+    const effectiveChainId =
+      config.deposit.depositTokens[chainId] && Object.keys(config.deposit.depositTokens[chainId]).length > 0
+        ? chainId
+        : 1;
+
+    return Object.values(config.deposit.depositTokens[effectiveChainId] || {});
+  }, [config, chainId]);
+  const availableReceiveTokens = useMemo(() => {
+    // If current chain has receive tokens, use them, otherwise fall back to mainnet (chain ID 1)
+    const effectiveChainId =
+      config.withdraw.wantTokens[chainId] && Object.keys(config.withdraw.wantTokens[chainId]).length > 0 ? chainId : 1;
+
+    return Object.values(config.withdraw.wantTokens[effectiveChainId] || {});
+  }, [config, chainId]);
 
   //////////////////////////////
   // Component State
@@ -165,8 +176,7 @@ export function useVault() {
 
           setRateInQuote("0"); // Default rate since getRateInQuote is removed
           setAssetBalance(balanceResult.toString());
-        } catch (error) {
-          console.error("Failed to fetch token data:", error);
+        } catch {
           setRateInQuote("0");
           setAssetBalance("0");
         } finally {
@@ -174,7 +184,6 @@ export function useVault() {
         }
       } catch (error) {
         const err = error as Error;
-        console.error("Failed to fetch token data:", err.message);
         setError(err.message);
       }
     };
@@ -209,7 +218,6 @@ export function useVault() {
         setPreviewFee(previewFee.toString());
       } catch (error) {
         const err = error as Error;
-        console.error("Failed to fetch preview fee:", err.message);
         setError(err.message);
       } finally {
         setTokenMetricsLoading(false);
@@ -251,7 +259,6 @@ export function useVault() {
         setEthPrice(ethPriceResult.toString());
       } catch (error) {
         const err = error as Error;
-        console.error("Failed to fetch vault data:", err.message);
         setError(err.message);
       } finally {
         setVaultMetricsLoading(false);
@@ -648,8 +655,7 @@ export function useVault() {
       try {
         const rate = "0"; // Default rate since getRateInQuote is removed
         setRateInQuote(rate);
-      } catch (error) {
-        console.error("Failed to update rate in quote:", error);
+      } catch {
         setRateInQuote("0");
       } finally {
         setTokenMetricsLoading(false);
