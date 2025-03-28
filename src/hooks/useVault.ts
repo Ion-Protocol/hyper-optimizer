@@ -134,7 +134,10 @@ export function useVault() {
     const fetchTokenData = async () => {
       try {
         const tokenIndex = activeTab === "deposit" ? depositTokenIndex : receiveTokenIndex;
-        const selectedToken = availableDepositTokens[depositTokenIndex];
+        const selectedToken =
+          activeTab === "deposit"
+            ? availableDepositTokens[depositTokenIndex]
+            : availableReceiveTokens[receiveTokenIndex];
 
         if (!selectedToken?.token?.addresses?.[chainId] || !address) {
           setAssetBalance("0");
@@ -493,7 +496,7 @@ export function useVault() {
     activeTab === "deposit"
       ? `${bigIntToNumberAsString(BigInt(assetBalance), {
           maximumFractionDigits: 4,
-        })} ${vaultKey}`
+        })} ${availableDepositTokens[depositTokenIndex]?.token?.symbol || ""}`
       : `${bigIntToNumberAsString(BigInt(vaultBalance), {
           maximumFractionDigits: 4,
         })} ${vaultKey}`;
