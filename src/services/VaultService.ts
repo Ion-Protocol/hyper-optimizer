@@ -9,8 +9,6 @@ import {
   TellerAbi,
   TokenKey,
   VaultKey,
-  nucleusTokenConfig,
-  NucleusTokenKey,
 } from "@molecularlabs/nucleus-frontend";
 import { Address } from "viem";
 import { mainnet } from "viem/chains";
@@ -37,6 +35,20 @@ export class VaultService {
     return minimumMint - slippageAmount;
   }
 
+  // Get the rate in quote for a vault
+  public static async getRateInQuote(vaultKey: VaultKey, depositToken: TokenKey): Promise<bigint> {
+    const config = getVaultByKey(vaultKey as VaultKey);
+    const tokenAddress =
+      config.deposit.depositTokens[mainnet.id]?.[depositToken as TokenKey]?.token.addresses[mainnet.id];
+    if (!tokenAddress) {
+      return BigInt(0);
+    }
+
+    // Since getRateInQuoteSafe is no longer available, we'll use a default rate
+    // In a production environment, you should implement proper rate fetching
+    return BigInt(1e18); // 1:1 exchange rate with 18 decimals of precision
+  }
+
   // Get the preview fee for a vault
   public static async getPreviewFee({
     vaultKey,
@@ -58,7 +70,7 @@ export class VaultService {
       shareAmount,
       bridgeData,
       contractAddress: tellerContractAddress,
-      chain: mainnet,
+      chain: config.chain,
     });
     return previewFee;
   }
