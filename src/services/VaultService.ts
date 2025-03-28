@@ -3,9 +3,7 @@ import {
   AtomicQueueAbi,
   CrossChainTellerBaseAbi,
   DEFAULT_SLIPPAGE,
-  getPreviewFee,
   getVaultByKey,
-  prepareBridgeData,
   TellerAbi,
   TokenKey,
   VaultKey,
@@ -50,29 +48,9 @@ export class VaultService {
   }
 
   // Get the preview fee for a vault
-  public static async getPreviewFee({
-    vaultKey,
-    address,
-    shareAmount,
-  }: {
-    vaultKey: VaultKey;
-    address: `0x${string}`;
-    shareAmount: bigint;
-  }) {
-    const config = getVaultByKey(vaultKey as VaultKey);
-    const tellerContractAddress = config.contracts.teller;
-    const bridgeChainId = config.deposit.bridgeChainIdentifier;
-    if (bridgeChainId === 0) {
-      return BigInt(0);
-    }
-    const bridgeData = prepareBridgeData(bridgeChainId, address, "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE");
-    const previewFee = await getPreviewFee({
-      shareAmount,
-      bridgeData,
-      contractAddress: tellerContractAddress,
-      chain: config.chain,
-    });
-    return previewFee;
+  public static async getPreviewFee() {
+    // Since bridging is not needed, always return 0
+    return BigInt(0);
   }
 
   /** 
@@ -107,11 +85,7 @@ export class VaultService {
     ////////////////////////////////
     // Calculate Preview Fee
     ////////////////////////////////
-    const previewFee = await this.getPreviewFee({
-      vaultKey,
-      address,
-      shareAmount: minimumMint,
-    });
+    const previewFee = await this.getPreviewFee();
 
     ////////////////////////////////
     // Prepare Bridge Data
@@ -215,11 +189,7 @@ export class VaultService {
     // Bridge
     ///////////////////////////////////
     try {
-      const latestPreviewFee = await VaultService.getPreviewFee({
-        vaultKey: vaultKey as VaultKey,
-        address: address as `0x${string}`,
-        shareAmount: shareAmount,
-      });
+      const latestPreviewFee = await VaultService.getPreviewFee();
       const bridgeData = {
         chainSelector: config.withdraw.bridgeChainIdentifier,
         destinationChainReceiver: address as Address,

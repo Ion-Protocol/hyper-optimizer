@@ -83,7 +83,6 @@ export function useVault() {
 
   // Other State
   const [error, setError] = useState<string>("");
-  const [debouncedInputValue, setDebouncedInputValue] = useState<string>(inputValue);
 
   // Add specific loading states for different data types
   const [vaultMetricsLoading, setVaultMetricsLoading] = useState<boolean>(true);
@@ -203,29 +202,9 @@ export function useVault() {
 
   // Separate effect just for preview fee fetching.
   useEffect(() => {
-    const fetchPreviewFee = async () => {
-      try {
-        const bridgeChainId = config.deposit.bridgeChainIdentifier;
-        if (!address || bridgeChainId === 0 || debouncedInputValue === "") return;
-
-        // Only set loading if we're actually going to fetch new data
-        setTokenMetricsLoading(true);
-        const previewFee = await VaultService.getPreviewFee({
-          vaultKey: vaultKey as VaultKey,
-          address: address as `0x${string}`,
-          shareAmount: BigInt(convertToBigIntString(debouncedInputValue)),
-        });
-        setPreviewFee(previewFee.toString());
-      } catch (error) {
-        const err = error as Error;
-        setError(err.message);
-      } finally {
-        setTokenMetricsLoading(false);
-      }
-    };
-
-    fetchPreviewFee();
-  }, [address, config.deposit.bridgeChainIdentifier, vaultKey, debouncedInputValue]);
+    // Since bridging is not needed, always set preview fee to 0
+    setPreviewFee("0");
+  }, []);
 
   // Data that remains constant with the vault key
   useEffect(() => {
@@ -288,15 +267,6 @@ export function useVault() {
       setVaultBalance("0");
     }
   }, [address]);
-
-  // Create debounced effect for input value for updating the preview fee
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedInputValue(inputValue);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [inputValue]);
 
   //////////////////////////////
   // Async Actions
